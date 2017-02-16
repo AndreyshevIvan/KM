@@ -45,9 +45,8 @@ void PrintMatrix(vector<vector<T>> const& boolMatrix)
 	}
 }
 
-void FindConnection(vector<vector<bool>>& matrix, size_t y, size_t& connectionCount, vector<size_t>& connectionSizes, size_t& yToStop, set<size_t>& checkedRows)
+void FindConnection(vector<vector<bool>>& matrix, size_t y, size_t& connectionCount, vector<size_t>& connectionSizes, size_t& yToStop)
 {
-	checkedRows.insert(y);
 	for (size_t x = 0; x < matrix[y].size(); ++x)
 	{
 		if (matrix[y][x])
@@ -63,7 +62,7 @@ void FindConnection(vector<vector<bool>>& matrix, size_t y, size_t& connectionCo
 				connectionSizes.push_back(connectionCount);
 				break;
 			}
-			FindConnection(matrix, x, connectionCount, connectionSizes, yToStop, checkedRows);
+			FindConnection(matrix, x, connectionCount, connectionSizes, yToStop);
 			break;
 		}
 	}
@@ -95,16 +94,12 @@ vector<size_t> FindCycles(vector<vector<bool>> const& sourceMatrix)
 {
 	auto matrix = sourceMatrix;
 	vector<size_t> connectionSizes;
-	set<size_t> checkedRows;
 
 	for (size_t y = 0; y < matrix.size(); ++y)
 	{
-		if (checkedRows.find(y) == checkedRows.end())
-		{
-			size_t connectionCount = 0;
-			size_t yToStop = SIZE_MAX;
-			FindConnection(matrix, y, connectionCount, connectionSizes, yToStop, checkedRows);
-		}
+		size_t connectionCount = 0;
+		size_t yToStop = SIZE_MAX;
+		FindConnection(matrix, y, connectionCount, connectionSizes, yToStop);
 	}
 	sort(connectionSizes.begin(), connectionSizes.end());
 
@@ -113,6 +108,7 @@ vector<size_t> FindCycles(vector<vector<bool>> const& sourceMatrix)
 
 int main(int argc, char* argv[])
 {
+	(void)argc;
 	setlocale(LC_ALL, "");
 
 	ifstream input0(argv[1]);
@@ -124,10 +120,12 @@ int main(int argc, char* argv[])
 	auto secondMatrix = ReadMatrix(input1);
 	auto connectionSizesSecond = FindCycles(secondMatrix);
 
-	PrintVector(connectionSizesFirst);
-	PrintVector(connectionSizesSecond);
+	//PrintVector(connectionSizesFirst);
+	//PrintVector(connectionSizesSecond);
 
-	if (connectionSizesFirst == connectionSizesSecond)
+	if (connectionSizesFirst == connectionSizesSecond &&
+		!connectionSizesFirst.empty() &&
+		!connectionSizesSecond.empty())
 	{
 		cout << "ֳנאפû טחמלמנפםû" << endl;
 	}
