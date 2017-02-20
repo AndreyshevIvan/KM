@@ -4,22 +4,22 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <iterator>
 #include <algorithm>
-#include <set>
 
 using namespace std;
 
-void ReadLineFromFileToBoolVector(ifstream& file, vector<bool>& vect, char ifTrue)
+vector<bool> ReadLineFromFileToBoolVector(ifstream& file)
 {
+	vector<bool> vect;
 	string line;
 	getline(file, line);
 	stringstream stream(line);
 	char elem;
 	while (stream >> elem)
 	{
-		vect.push_back(elem == ifTrue);
+		vect.push_back(elem == '1');
 	}
+	return vect;
 }
 
 template<typename T>
@@ -68,31 +68,31 @@ void FindConnection(vector<vector<bool>>& matrix, size_t y, size_t& connectionCo
 	}
 }
 
-void ReadMatrixSize(ifstream& file, size_t& size)
+size_t ReadMatrixSize(ifstream& file)
 {
+	size_t size;
 	string line;
 	getline(file, line);
 	stringstream stream(line);
 	stream >> size;
+	return size;
 }
 
 vector<vector<bool>> ReadMatrix(ifstream& file)
 {
-	size_t matrixCollumsCount = 0;
-	ReadMatrixSize(file, matrixCollumsCount);
-	vector<vector<bool>> matrix(matrixCollumsCount);
+	size_t matrixSize = ReadMatrixSize(file);
+	vector<vector<bool>> matrix(matrixSize);
 
-	for (size_t i = 0; i < matrixCollumsCount; ++i)
+	for (size_t i = 0; i < matrixSize; ++i)
 	{
-		ReadLineFromFileToBoolVector(file, matrix[i], '1');
+		matrix[i] = ReadLineFromFileToBoolVector(file);
 	}
 
 	return matrix;
 }
 
-vector<size_t> FindCycles(vector<vector<bool>> const& sourceMatrix)
+vector<size_t> FindCycles(vector<vector<bool>> matrix)
 {
-	auto matrix = sourceMatrix;
 	vector<size_t> connectionSizes;
 
 	for (size_t y = 0; y < matrix.size(); ++y)
@@ -119,9 +119,6 @@ int main(int argc, char* argv[])
 
 	auto secondMatrix = ReadMatrix(input1);
 	auto connectionSizesSecond = FindCycles(secondMatrix);
-
-	//PrintVector(connectionSizesFirst);
-	//PrintVector(connectionSizesSecond);
 
 	if (connectionSizesFirst == connectionSizesSecond &&
 		!connectionSizesFirst.empty() &&
