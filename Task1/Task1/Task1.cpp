@@ -8,18 +8,24 @@
 
 using namespace std;
 
-vector<bool> ReadLineFromFileToBoolVector(ifstream& file)
+bool ReadLineFromFileToBoolVector(ifstream& file, vector<bool>& lineVect)
 {
 	vector<bool> vect;
 	string line;
-	getline(file, line);
-	stringstream stream(line);
-	char elem;
-	while (stream >> elem)
+	if (getline(file, line))
 	{
-		vect.push_back(elem == '1');
+		stringstream stream(line);
+		char elem;
+		while (stream >> elem)
+		{
+			vect.push_back(elem == '1');
+		}
+		lineVect = vect;
+
+		return true;
 	}
-	return vect;
+
+	return false;
 }
 
 template<typename T>
@@ -68,24 +74,14 @@ void FindConnection(vector<vector<bool>>& matrix, size_t y, size_t& connectionCo
 	}
 }
 
-size_t ReadMatrixSize(ifstream& file)
-{
-	size_t size;
-	string line;
-	getline(file, line);
-	stringstream stream(line);
-	stream >> size;
-	return size;
-}
-
 vector<vector<bool>> ReadMatrix(ifstream& file)
 {
-	size_t matrixSize = ReadMatrixSize(file);
-	vector<vector<bool>> matrix(matrixSize);
+	vector<vector<bool>> matrix;
+	vector<bool> line;
 
-	for (size_t i = 0; i < matrixSize; ++i)
+	while (ReadLineFromFileToBoolVector(file, line))
 	{
-		matrix[i] = ReadLineFromFileToBoolVector(file);
+		matrix.push_back(line);
 	}
 
 	return matrix;
