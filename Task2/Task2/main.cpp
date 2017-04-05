@@ -10,7 +10,7 @@ bool IsHashValid(set<size_t> &passedHashes, size_t hash);
 int main()
 {
 	Node* firstNode = new Node(START_MATRIX);
-
+	(void)firstNode;
 	StartBFS(firstNode);
 
 	return 0;
@@ -26,8 +26,7 @@ void StartBFS(Node* firstNode)
 	{
 		ProcessSearch(searchQueue, passedHashes);
 	}
-
-	cout << passedHashes.size();
+	cout << passedHashes.size() << endl;
 }
 
 void ProcessSearch(queue<Node*> &searchQueue, set<size_t> &passedHashes)

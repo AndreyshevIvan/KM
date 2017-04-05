@@ -3,8 +3,7 @@
 
 Node::Node(const vector<vector<size_t>> &matrix)
 {
-	this->m_matrix = matrix;
-	//cout << "Create node\n";
+	this->m_matrix = move(matrix);
 	CalculateHash();
 	CalculateEmptyPosition();
 }
@@ -52,7 +51,7 @@ void Node::CalculateEmptyPosition()
 		{
 			if (m_matrix[i][j] == 0)
 			{
-				m_emptyPosition = { i, j };
+				m_emptyPosition = Point(j, i);
 			}
 		}
 	}
