@@ -27,6 +27,9 @@ class Node
 public:
 	Node(const vector<vector<size_t>> &matrix);
 
+	static size_t GetHashFromMatrix(const vector<vector<size_t>> &matrix);
+
+	vector<vector<size_t>> GetMatrix();
 	size_t GetHash();
 	Point GetEmptyPoint();
 
