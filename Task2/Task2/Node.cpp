@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Node.h"
 
 Node::Node(const vector<vector<size_t>> &matrix)

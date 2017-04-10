@@ -1,5 +1,8 @@
-#include "stdafx.h"
 #include "Node.h"
+
+#include <queue>
+#include <set>
+#include <iostream>
 
 using namespace std;
 
@@ -10,7 +13,6 @@ bool IsHashValid(set<size_t> &passedHashes, size_t hash);
 int main()
 {
 	Node* firstNode = new Node(START_MATRIX);
-	(void)firstNode;
 	StartBFS(firstNode);
 
 	return 0;
