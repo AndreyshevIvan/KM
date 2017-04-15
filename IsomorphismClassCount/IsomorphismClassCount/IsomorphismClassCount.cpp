@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <iostream>
 
+
 int Sum(int first, int second)
 {
 	if (first > 0 && second == 0)
