@@ -19,9 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{3D33634B-034E-4A60-B46E-A226DC466920}</ProjectGuid>
-    <RootNamespace>TagGameDFS</RootNamespace>
+    <ProjectGuid>{7778B47E-6F75-4FD1-945F-A5174AFE6C4A}</ProjectGuid>
+    <RootNamespace>TagGame</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>LimitDFS</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -118,6 +119,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CNode.h" />
+    <ClInclude Include="CSearchData.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CSearchData.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="CNode.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
