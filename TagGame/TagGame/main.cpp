@@ -40,6 +40,8 @@ int main(int argc, char* argv[])
 		searchData.Print(cout);
 	}
 
+	searchData.Clear();
+
 	return 0;
 }
 
@@ -60,13 +62,15 @@ void StartSearch(CSearchData &searchData, CSearchQueue* searchQueue)
 			break;
 		}
 	}
+
+	searchQueue->Clear();
+	delete searchQueue;
 }
 
 void ProcessSearch(CSearchQueue* searchQueue, CSearchData &searchData)
 {
 	CNode* currentNode = searchQueue->Top();
 	const Point emptyPos = currentNode->GetEmptyPoint();
-	const size_t currHash = currentNode->GetHash();
 	const vector<Direction> prevPath = currentNode->GetPath();
 	searchQueue->Pop();
 
@@ -74,17 +78,18 @@ void ProcessSearch(CSearchQueue* searchQueue, CSearchData &searchData)
 		const size_t newHash = CNode::GetHashFromMatrix(newMatrix);
 		const size_t prevDepth = currentNode->GetDepth();
 		const size_t newDepth = prevDepth + 1;
+		searchData.IncreaseGeneratedNodes();
 
 		if (searchData.IsHashValid(newHash) && searchData.IsDepthValid(newDepth))
 		{
 			CNode* newNode = new CNode(newMatrix, prevPath, newDepth);
 			newNode->AddToPath(newDirect);
 			searchQueue->Push(newNode, searchData.GetSearchMatrix());
-			searchData.IncreaseGeneratedNodes();
+			searchData.IncreaseOpenNodes();
 		}
 	};
 	
-	searchData.InsertHash(currHash);
+	searchData.InsertHash(currentNode->GetHash());
 	if (searchData.IsSearchComplete())
 	{
 		searchData.SetPath(prevPath);
@@ -115,6 +120,8 @@ void ProcessSearch(CSearchQueue* searchQueue, CSearchData &searchData)
 		swap(matrix[emptyPos.y + 1][emptyPos.x], matrix[emptyPos.y][emptyPos.x]);
 		addToQueue_if(matrix, Direction::UP);
 	}
+
+	delete currentNode;
 }
 
 CSearchQueue* CreateSearchQueue(CSearchData &searchData)

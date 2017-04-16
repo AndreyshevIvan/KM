@@ -1,7 +1,6 @@
 #include "CSearchQueue.h"
 #include <string>
 #include <cmath>
-#include <iostream>
 #include <algorithm>
 
 using namespace std;
@@ -26,6 +25,14 @@ bool CStack::IsEmpty()
 {
 	return m_stack.empty();
 }
+void CStack::Clear()
+{
+	while (!m_stack.empty())
+	{
+		delete m_stack.top();
+		m_stack.pop();
+	}
+}
 
 CNode* CQueue::Top()
 {
@@ -46,6 +53,14 @@ void CQueue::Pop()
 bool CQueue::IsEmpty()
 {
 	return m_queue.empty();
+}
+void CQueue::Clear()
+{
+	while (!m_queue.empty())
+	{
+		delete m_queue.front();
+		m_queue.pop();
+	}
 }
 
 CNode* CPriorityQueue::Top()
@@ -108,4 +123,12 @@ size_t CPriorityQueue::CalculatePriority(const Matrix &newMatrix, const Matrix &
 		}
 	}
 	return priority;
+}
+void CPriorityQueue::Clear()
+{
+	while (!m_priorityQueue.empty())
+	{
+		delete m_priorityQueue.begin()->second;
+		m_priorityQueue.erase(m_priorityQueue.begin());
+	}
 }

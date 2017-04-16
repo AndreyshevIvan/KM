@@ -94,9 +94,9 @@ void CSearchData::Print(ostream &output)
 	output << "Search type: " << m_searchName << endl;
 	output << "Depth limit: " << m_searchDepth << endl;
 	output << "Search hash: " << m_searchHashStr << endl;
-	output << "Nodes generate: " << m_passedHashes.size() << endl;
-	output << "Path length: " << m_path.size() << endl;
+	output << "Nodes generate: " << m_generateNodesCount << endl;
 	output << "Nodes open: " << m_openNodesCount << endl;
+	output << "Path length: " << m_path.size() << endl;
 	
 	if (IsSearchComplete())
 	{
@@ -133,4 +133,9 @@ void CSearchData::Print(ostream &output)
 	}
 
 	output << endl;
+}
+
+void CSearchData::Clear()
+{
+	m_passedHashes.clear();
 }

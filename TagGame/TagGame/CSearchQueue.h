@@ -2,6 +2,7 @@
 #include <queue>
 #include <stack>
 #include <set>
+#include <iostream>
 #include "CNode.h"
 
 const std::string BFS_SEARCH_NAME = "bfs";
@@ -25,6 +26,7 @@ public:
 	virtual void Push(CNode* node, const Matrix &searchMatrix = {}) = 0;
 	virtual void Pop() = 0;
 	virtual bool IsEmpty() = 0;
+	virtual void Clear() = 0;
 
 protected:
 	std::queue<CNode*> m_queue;
@@ -35,19 +37,23 @@ protected:
 class CStack : public CSearchQueue
 {
 public:
+
 	CNode* Top() override;
 	void Push(CNode* node, const Matrix &searchMatrix = {}) override;
 	void Pop() override;
 	bool IsEmpty() override;
+	void Clear() override;
 };
 
 class CQueue : public CSearchQueue
 {
 public:
+
 	CNode* Top() override;
 	void Push(CNode* node, const Matrix &searchMatrix = {}) override;
 	void Pop() override;
 	bool IsEmpty() override;
+	void Clear() override;
 };
 
 class CPriorityQueue : public CSearchQueue
@@ -57,6 +63,7 @@ public:
 	void Push(CNode* node, const Matrix &searchMatrix = {}) override;
 	void Pop() override;
 	bool IsEmpty() override;
+	void Clear() override;
 
 private:
 	size_t CalculatePriority(const Matrix &newMatrix, const Matrix &searchMatrix);

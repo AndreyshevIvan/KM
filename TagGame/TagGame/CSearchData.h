@@ -26,6 +26,8 @@ public:
 
 	void Print(std::ostream &output);
 
+	void Clear();
+
 private:
 	size_t m_fieldSize;
 	size_t m_searchDepth;

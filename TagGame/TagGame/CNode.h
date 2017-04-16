@@ -22,12 +22,6 @@ struct Point
 
 typedef std::vector<std::vector<size_t>> Matrix;
 
-const Matrix START_MATRIX = {
-	{ 0, 1, 2 },
-	{ 3, 4, 5 },
-	{ 6, 7, 8 }
-};
-
 class CNode
 {
 public:
