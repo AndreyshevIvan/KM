@@ -41,13 +41,7 @@ void StartSearch(CSearchData &searchData, CSearchQueue* searchQueue)
 	const size_t fieldSize = searchData.GetFieldSize();
 	const Matrix startMatrix = CNode::CreateStartMatrix(fieldSize);
 
-	vector<Direction> nullPath;
-	CNode* firstNode = new CNode(startMatrix, nullPath, 0);
-	cerr << "Before push" << endl;
-
-	if (searchQueue != nullptr)
-		cout << "Queue not null after start";
-
+	CNode* firstNode = new CNode(startMatrix);
 	searchQueue->Push(firstNode);
 
 	while (!searchQueue->IsEmpty())
@@ -78,7 +72,7 @@ void ProcessSearch(CSearchQueue* searchQueue, CSearchData &searchData)
 		{
 			CNode* newNode = new CNode(newMatrix, prevPath, newDepth);
 			newNode->AddToPath(newDirect);
-			searchQueue->Push(newNode);
+			searchQueue->Push(newNode, searchData.GetSearchMatrix());
 			searchData.IncreaseGeneratedNodes();
 		}
 	};

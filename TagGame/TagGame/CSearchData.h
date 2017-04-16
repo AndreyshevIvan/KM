@@ -12,6 +12,7 @@ public:
 
 	size_t GetFieldSize();
 	std::string GetSearchName();
+	Matrix GetSearchMatrix();
 
 	void SetPath(const std::vector<Direction> &direction);
 
@@ -31,6 +32,7 @@ private:
 	size_t m_generateNodesCount = 0;
 	size_t m_openNodesCount = 0;
 	size_t m_searchHash;
+	Matrix m_searchMatrix;
 	std::string m_searchHashStr;
 	std::vector<Direction> m_path;
 	std::set<size_t> m_passedHashes;

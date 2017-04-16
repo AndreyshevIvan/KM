@@ -31,7 +31,7 @@ const Matrix START_MATRIX = {
 class CNode
 {
 public:
-	CNode(const Matrix &matrix, const std::vector<Direction> &path, size_t depth);
+	CNode(const Matrix &matrix, const std::vector<Direction> &path = {}, size_t depth = 0);
 
 	static size_t GetHashFromMatrix(const Matrix &matrix);
 	static Matrix CreateStartMatrix(size_t size);

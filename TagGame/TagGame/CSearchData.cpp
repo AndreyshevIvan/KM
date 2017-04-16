@@ -24,11 +24,17 @@ CSearchData::CSearchData(ifstream &input)
 	getline(input, m_searchHashStr);
 	stringstream stramMatrix(m_searchHashStr);
 	m_searchHash = 0;
-	for (size_t i = 0; i < m_fieldSize * m_fieldSize; i++)
+	for (size_t i = 0; i < m_fieldSize; i++)
 	{
-		size_t cell;
-		stramMatrix >> cell;
-		m_searchHash = m_searchHash * 10 + cell;
+		vector<size_t> matrixRow;
+		for (size_t j = 0; j < m_fieldSize; j++)
+		{
+			size_t cell;
+			stramMatrix >> cell;
+			m_searchHash = m_searchHash * 10 + cell;
+			matrixRow.push_back(cell);
+		}
+		m_searchMatrix.push_back(matrixRow);
 	}
 }
 
@@ -39,6 +45,10 @@ size_t CSearchData::GetFieldSize()
 string CSearchData::GetSearchName()
 {
 	return m_searchName;
+}
+Matrix CSearchData::GetSearchMatrix()
+{
+	return m_searchMatrix;
 }
 
 void CSearchData::SetPath(const vector<Direction> &path)
@@ -85,6 +95,7 @@ void CSearchData::Print(ofstream &output)
 	output << "Depth limit: " << m_searchDepth << endl;
 	output << "Search hash: " << m_searchHashStr << endl;
 	output << "Nodes generate: " << m_passedHashes.size() << endl;
+	output << "Path length: " << m_path.size() << endl;
 	output << "Nodes open: " << m_openNodesCount << endl;
 	
 	if (IsSearchComplete())
