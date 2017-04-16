@@ -11,6 +11,7 @@ public:
 	CSearchData(std::ifstream &input);
 
 	size_t GetFieldSize();
+	std::string GetSearchName();
 
 	void SetPath(const std::vector<Direction> &direction);
 
@@ -33,6 +34,7 @@ private:
 	std::string m_searchHashStr;
 	std::vector<Direction> m_path;
 	std::set<size_t> m_passedHashes;
+	std::string m_searchName;
 	bool m_isSearchComplete = false;
 
 };

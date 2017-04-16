@@ -3,7 +3,7 @@
 
 using namespace std;
 
-CNode::CNode(const vector<vector<size_t>> &matrix, const vector<Direction> &path, size_t depth)
+CNode::CNode(const Matrix &matrix, const vector<Direction> &path, size_t depth)
 {
 	m_matrix = move(matrix);
 	m_path = move(path);
@@ -12,7 +12,7 @@ CNode::CNode(const vector<vector<size_t>> &matrix, const vector<Direction> &path
 	CalculateEmptyPosition();
 }
 
-size_t CNode::GetHashFromMatrix(const vector<vector<size_t>> &matrix)
+size_t CNode::GetHashFromMatrix(const Matrix &matrix)
 {
 	size_t hash = 0;
 
@@ -27,9 +27,9 @@ size_t CNode::GetHashFromMatrix(const vector<vector<size_t>> &matrix)
 	return hash;
 }
 
-vector<vector<size_t>> CNode::CreateStartMatrix(size_t size)
+Matrix CNode::CreateStartMatrix(size_t size)
 {
-	vector<vector<size_t>> matrix;
+	Matrix matrix;
 	size_t cell = 0;
 
 	for (size_t i = 0; i < size; i++)
@@ -48,7 +48,7 @@ vector<vector<size_t>> CNode::CreateStartMatrix(size_t size)
 	return matrix;
 }
 
-vector<vector<size_t>> CNode::GetMatrix()
+Matrix CNode::GetMatrix()
 {
 	return m_matrix;
 }

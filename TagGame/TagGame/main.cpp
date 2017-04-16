@@ -1,27 +1,34 @@
 #include "CSearchData.h"
+#include "CSearchQueue.h"
 
-#include <queue>
 #include <iostream>
 
 using namespace std;
 
 const int ARGUMENTS_COUNT = 3;
 
-void StartBFS(CSearchData &searcData);
-void ProcessSearch(queue<CNode*> &searchQueue, CSearchData &searcData);
+void StartSearch(CSearchData &searcData, CSearchQueue* searchQueue);
+void ProcessSearch(CSearchQueue* searchQueue, CSearchData &searcData);
+CSearchQueue* CreateSearchQueue(CSearchData &searchData);
 
 int main(int argc, char* argv[])
 {
 	if (argc < ARGUMENTS_COUNT)
 	{
-		std::cerr << "Invalid arguments" << endl;
+		std::cerr << "Invalid arguments." << endl;
 		return 1;
 	}
 
 	ifstream input(argv[1]);
 	CSearchData searchData(input);
+	CSearchQueue* searchQueue = CreateSearchQueue(searchData);
+	if (searchQueue == nullptr)
+	{
+		std::cerr << "Invalid search type." << endl;
+		return 1;
+	}
 
-	StartBFS(searchData);
+	StartSearch(searchData, searchQueue);
 
 	ofstream output(argv[2]);
 	searchData.Print(output);
@@ -29,17 +36,21 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
-void StartBFS(CSearchData &searchData)
+void StartSearch(CSearchData &searchData, CSearchQueue* searchQueue)
 {
 	const size_t fieldSize = searchData.GetFieldSize();
-	const vector<vector<size_t>> startMatrix = CNode::CreateStartMatrix(fieldSize);
+	const Matrix startMatrix = CNode::CreateStartMatrix(fieldSize);
 
-	queue<CNode*> searchQueue;
 	vector<Direction> nullPath;
 	CNode* firstNode = new CNode(startMatrix, nullPath, 0);
-	searchQueue.push(firstNode);
+	cerr << "Before push" << endl;
 
-	while (!searchQueue.empty())
+	if (searchQueue != nullptr)
+		cout << "Queue not null after start";
+
+	searchQueue->Push(firstNode);
+
+	while (!searchQueue->IsEmpty())
 	{
 		ProcessSearch(searchQueue, searchData);
 
@@ -50,15 +61,15 @@ void StartBFS(CSearchData &searchData)
 	}
 }
 
-void ProcessSearch(queue<CNode*> &searchQueue, CSearchData &searchData)
+void ProcessSearch(CSearchQueue* searchQueue, CSearchData &searchData)
 {
-	CNode* currentNode = searchQueue.front();
+	CNode* currentNode = searchQueue->Top();
 	const Point emptyPos = currentNode->GetEmptyPoint();
 	const size_t currHash = currentNode->GetHash();
 	const vector<Direction> prevPath = currentNode->GetPath();
-	searchQueue.pop();
+	searchQueue->Pop();
 
-	auto addToQueue_if = [&](const vector<vector<size_t>> &newMatrix, Direction newDirect) {
+	auto addToQueue_if = [&](const Matrix &newMatrix, Direction newDirect) {
 		const size_t newHash = CNode::GetHashFromMatrix(newMatrix);
 		const size_t prevDepth = currentNode->GetDepth();
 		const size_t newDepth = prevDepth + 1;
@@ -67,7 +78,7 @@ void ProcessSearch(queue<CNode*> &searchQueue, CSearchData &searchData)
 		{
 			CNode* newNode = new CNode(newMatrix, prevPath, newDepth);
 			newNode->AddToPath(newDirect);
-			searchQueue.push(newNode);
+			searchQueue->Push(newNode);
 			searchData.IncreaseGeneratedNodes();
 		}
 	};
@@ -81,26 +92,46 @@ void ProcessSearch(queue<CNode*> &searchQueue, CSearchData &searchData)
 
 	if (emptyPos.x > 0)
 	{
-		vector<vector<size_t>> matrix = currentNode->GetMatrix();
+		Matrix matrix = currentNode->GetMatrix();
 		swap(matrix[emptyPos.y][emptyPos.x - 1], matrix[emptyPos.y][emptyPos.x]);
 		addToQueue_if(matrix, Direction::RIGHT);
 	}
 	if (emptyPos.x < searchData.GetFieldSize() - 1)
 	{
-		vector<vector<size_t>> matrix = currentNode->GetMatrix();
+		Matrix matrix = currentNode->GetMatrix();
 		swap(matrix[emptyPos.y][emptyPos.x + 1], matrix[emptyPos.y][emptyPos.x]);
 		addToQueue_if(matrix, Direction::LEFT);
 	}
 	if (emptyPos.y > 0)
 	{
-		vector<vector<size_t>> matrix = currentNode->GetMatrix();
+		Matrix matrix = currentNode->GetMatrix();
 		swap(matrix[emptyPos.y - 1][emptyPos.x], matrix[emptyPos.y][emptyPos.x]);
 		addToQueue_if(matrix, Direction::DOWN);
 	}
 	if (emptyPos.y < searchData.GetFieldSize() - 1)
 	{
-		vector<vector<size_t>> matrix = currentNode->GetMatrix();
+		Matrix matrix = currentNode->GetMatrix();
 		swap(matrix[emptyPos.y + 1][emptyPos.x], matrix[emptyPos.y][emptyPos.x]);
 		addToQueue_if(matrix, Direction::UP);
 	}
+}
+
+CSearchQueue* CreateSearchQueue(CSearchData &searchData)
+{
+	const string searchName = searchData.GetSearchName();
+
+	if (searchName == BFS_SEARCH_NAME)
+	{
+		return new CQueue();
+	}
+	if (searchName == DFS_SEARCH_NAME)
+	{
+		return new CStack();
+	}
+	if (searchName == ASTAR_SEARCH_NAME)
+	{
+		return new CPriorityQueue();
+	}
+
+	return nullptr;
 }

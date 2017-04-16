@@ -1,12 +1,17 @@
 #include "CSearchData.h"
 #include <sstream>
 #include <iostream>
+#include <locale> 
+#include <boost/algorithm/string.hpp>
 
 using namespace std;
 
 CSearchData::CSearchData(ifstream &input)
 {
 	string str;
+
+	getline(input, m_searchName);
+	boost::to_lower(m_searchName);
 
 	getline(input, str);
 	stringstream streamFieldSize(str);
@@ -16,11 +21,9 @@ CSearchData::CSearchData(ifstream &input)
 	stringstream streamDepthLimit(str);
 	streamDepthLimit >> m_searchDepth;
 
-	vector<vector<size_t>> searchMatrix;
-	getline(input, str);
-	stringstream stramMatrix(str);
+	getline(input, m_searchHashStr);
+	stringstream stramMatrix(m_searchHashStr);
 	m_searchHash = 0;
-	m_searchHashStr = str;
 	for (size_t i = 0; i < m_fieldSize * m_fieldSize; i++)
 	{
 		size_t cell;
@@ -33,6 +36,10 @@ size_t CSearchData::GetFieldSize()
 {
 	return m_fieldSize;
 }
+string CSearchData::GetSearchName()
+{
+	return m_searchName;
+}
 
 void CSearchData::SetPath(const vector<Direction> &path)
 {
@@ -43,12 +50,10 @@ void CSearchData::IncreaseGeneratedNodes(size_t addingCount)
 {
 	m_generateNodesCount += addingCount;
 }
-
 void CSearchData::IncreaseOpenNodes(size_t addingCount)
 {
 	m_openNodesCount += addingCount;
 }
-
 void CSearchData::InsertHash(size_t hash)
 {
 	m_passedHashes.insert(hash);
@@ -63,12 +68,10 @@ bool CSearchData::IsHashValid(size_t hash)
 {
 	return (m_passedHashes.find(hash) == m_passedHashes.end());
 }
-
 bool CSearchData::IsSearchComplete()
 {
 	return m_isSearchComplete;
 }
-
 bool CSearchData::IsDepthValid(size_t depth)
 {
 	return (depth <= m_searchDepth);
@@ -78,6 +81,7 @@ void CSearchData::Print(ofstream &output)
 {
 	output << "--- Tag game info ---" << endl;
 	output << "Field size: " << m_fieldSize << "x" << m_fieldSize << endl;
+	output << "Queue type: " << m_searchName << endl;
 	output << "Depth limit: " << m_searchDepth << endl;
 	output << "Search hash: " << m_searchHashStr << endl;
 	output << "Nodes generate: " << m_passedHashes.size() << endl;

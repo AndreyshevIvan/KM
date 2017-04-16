@@ -22,7 +22,7 @@
     <ProjectGuid>{7778B47E-6F75-4FD1-945F-A5174AFE6C4A}</ProjectGuid>
     <RootNamespace>TagGame</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
-    <ProjectName>LimitDFS</ProjectName>
+    <ProjectName>TagGame</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -121,11 +121,13 @@
   <ItemGroup>
     <ClInclude Include="CNode.h" />
     <ClInclude Include="CSearchData.h" />
+    <ClInclude Include="CSearchQueue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CSearchData.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="CNode.cpp" />
+    <ClCompile Include="CSearchQueue.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

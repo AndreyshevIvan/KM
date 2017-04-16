@@ -20,7 +20,9 @@ struct Point
 	size_t y = 0;
 };
 
-const std::vector<std::vector<size_t>> START_MATRIX = {
+typedef std::vector<std::vector<size_t>> Matrix;
+
+const Matrix START_MATRIX = {
 	{ 0, 1, 2 },
 	{ 3, 4, 5 },
 	{ 6, 7, 8 }
@@ -29,12 +31,12 @@ const std::vector<std::vector<size_t>> START_MATRIX = {
 class CNode
 {
 public:
-	CNode(const std::vector<std::vector<size_t>> &matrix, const std::vector<Direction> &path, size_t depth);
+	CNode(const Matrix &matrix, const std::vector<Direction> &path, size_t depth);
 
-	static size_t GetHashFromMatrix(const std::vector<std::vector<size_t>> &matrix);
-	static std::vector<std::vector<size_t>> CreateStartMatrix(size_t size);
+	static size_t GetHashFromMatrix(const Matrix &matrix);
+	static Matrix CreateStartMatrix(size_t size);
 
-	std::vector<std::vector<size_t>> GetMatrix();
+	Matrix GetMatrix();
 	size_t GetHash();
 	size_t GetDepth();
 	std::vector<Direction> GetPath();
@@ -47,7 +49,7 @@ private:
 	size_t m_hash = 0;
 	size_t m_depth = 0;
 	Point m_emptyPosition = { 0, 0 };
-	std::vector<std::vector<size_t>> m_matrix;
+	Matrix m_matrix;
 	std::vector<Direction> m_path;
 
 	void CalculateHash();
