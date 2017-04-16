@@ -5,7 +5,7 @@
 
 using namespace std;
 
-const int ARGUMENTS_COUNT = 3;
+const string CFG_FILE_NAME = "config.txt";
 
 void StartSearch(CSearchData &searcData, CSearchQueue* searchQueue);
 void ProcessSearch(CSearchQueue* searchQueue, CSearchData &searcData);
@@ -13,13 +13,13 @@ CSearchQueue* CreateSearchQueue(CSearchData &searchData);
 
 int main(int argc, char* argv[])
 {
-	if (argc < ARGUMENTS_COUNT)
+	ifstream input(CFG_FILE_NAME);
+	if (!input.is_open())
 	{
-		std::cerr << "Invalid arguments." << endl;
+		cerr << "Config file not found" << endl;
 		return 1;
 	}
 
-	ifstream input(argv[1]);
 	CSearchData searchData(input);
 	CSearchQueue* searchQueue = CreateSearchQueue(searchData);
 	if (searchQueue == nullptr)
@@ -30,8 +30,15 @@ int main(int argc, char* argv[])
 
 	StartSearch(searchData, searchQueue);
 
-	ofstream output(argv[2]);
-	searchData.Print(output);
+	if (argc > 1)
+	{
+		ofstream output(argv[1]);
+		searchData.Print(output);
+	}
+	else
+	{
+		searchData.Print(cout);
+	}
 
 	return 0;
 }

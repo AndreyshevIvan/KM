@@ -87,11 +87,11 @@ bool CSearchData::IsDepthValid(size_t depth)
 	return (depth <= m_searchDepth);
 }
 
-void CSearchData::Print(ofstream &output)
+void CSearchData::Print(ostream &output)
 {
 	output << "--- Tag game info ---" << endl;
 	output << "Field size: " << m_fieldSize << "x" << m_fieldSize << endl;
-	output << "Queue type: " << m_searchName << endl;
+	output << "Search type: " << m_searchName << endl;
 	output << "Depth limit: " << m_searchDepth << endl;
 	output << "Search hash: " << m_searchHashStr << endl;
 	output << "Nodes generate: " << m_passedHashes.size() << endl;

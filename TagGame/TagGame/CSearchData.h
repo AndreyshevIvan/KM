@@ -24,7 +24,7 @@ public:
 	bool IsSearchComplete();
 	bool IsDepthValid(size_t depth);
 
-	void Print(std::ofstream &output);
+	void Print(std::ostream &output);
 
 private:
 	size_t m_fieldSize;

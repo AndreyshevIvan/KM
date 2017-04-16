@@ -61,18 +61,13 @@ void CPriorityQueue::Push(CNode* node, const Matrix &searchMatrix)
 	const Matrix newMatrix = node->GetMatrix();
 	const size_t priority = CalculatePriority(newMatrix, searchMatrix);
 
-	//cout << priority << endl;
-	//cout << "before = " << m_priorityQueue.size() << endl;
 	m_priorityQueue.insert(priorityMap::value_type(priority, node));
-	//cout << m_priorityQueue.size() << endl;
 }
 void CPriorityQueue::Pop()
 {
 	if (!IsEmpty())
 	{
-		//cout << "before = " << m_priorityQueue.size() << endl;
 		m_priorityQueue.erase(m_priorityQueue.begin());
-		//cout << "after = " << m_priorityQueue.size() << endl;
 	}
 }
 bool CPriorityQueue::IsEmpty()
@@ -82,46 +77,35 @@ bool CPriorityQueue::IsEmpty()
 size_t CPriorityQueue::CalculatePriority(const Matrix &newMatrix, const Matrix &searchMatrix)
 {
 	auto getCoordinateInMatrix = [](const Matrix &matrix, size_t cellNum) {
-		//cout << cellNum << endl;
 		const size_t matrixSize = matrix.size();
-		//cout << "Matrix size in lambda = " << matrixSize << endl;
-		Point coordinate(0, 0);
 		for (size_t i = 0; i < matrixSize; i++)
 		{
 			for (size_t j = 0; j < matrixSize; j++)
 			{
 				if (matrix[i][j] == cellNum)
 				{
-					coordinate = Point(j, i);
-					j = matrixSize;
-					i = matrixSize;
-					//cout << "calculate complete " << coordinate.x << " " << coordinate.y << endl;
+					return Point(j, i);
 				}
 			}
 		}
-		return coordinate;
+		return Point(0, 0);
 	};
 
 	size_t priority = 0;
 	const size_t matrixSize = newMatrix.size();
-	//cout << "Matrix size = " << matrixSize << endl;
+
 	for (size_t row = 0; row < matrixSize; row++)
 	{
 		for (size_t coll = 0; coll < matrixSize; coll++)
 		{
 			const size_t cell = newMatrix[row][coll];
 			Point currPoint(coll, row);
-			//cout << "matrix size before lambda: " << searchMatrix.size() << endl;
 			Point destenation = getCoordinateInMatrix(searchMatrix, cell);
-			//cout << destenation.x << " " << destenation.y << endl;
 			int deltaX = static_cast<int>(destenation.x - currPoint.x);
 			int deltaY = static_cast<int>(destenation.y - currPoint.y);
-			//cout << "deltaX deltaY = " << deltaX << " " << deltaY << endl;
 			size_t wayLength = abs(deltaX) + abs(deltaY);
-			//cout << "way length = " << wayLength << endl;
 			priority += wayLength;
 		}
 	}
-	//cout << priority << endl;
 	return priority;
 }
