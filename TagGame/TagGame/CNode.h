@@ -29,7 +29,7 @@ const std::vector<std::vector<size_t>> START_MATRIX = {
 class CNode
 {
 public:
-	CNode(const std::vector<std::vector<size_t>> &matrix);
+	CNode(const std::vector<std::vector<size_t>> &matrix, const std::vector<Direction> &path, size_t depth);
 
 	static size_t GetHashFromMatrix(const std::vector<std::vector<size_t>> &matrix);
 	static std::vector<std::vector<size_t>> CreateStartMatrix(size_t size);
@@ -37,14 +37,18 @@ public:
 	std::vector<std::vector<size_t>> GetMatrix();
 	size_t GetHash();
 	size_t GetDepth();
+	std::vector<Direction> GetPath();
 	Point GetEmptyPoint();
+
 	void IncreaseDepth(size_t addingDepth = 1);
+	void AddToPath(Direction direction);
 
 private:
 	size_t m_hash = 0;
 	size_t m_depth = 0;
 	Point m_emptyPosition = { 0, 0 };
 	std::vector<std::vector<size_t>> m_matrix;
+	std::vector<Direction> m_path;
 
 	void CalculateHash();
 	void CalculateEmptyPosition();

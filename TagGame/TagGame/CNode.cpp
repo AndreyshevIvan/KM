@@ -3,9 +3,11 @@
 
 using namespace std;
 
-CNode::CNode(const vector<vector<size_t>> &matrix)
+CNode::CNode(const vector<vector<size_t>> &matrix, const vector<Direction> &path, size_t depth)
 {
 	m_matrix = move(matrix);
+	m_path = move(path);
+	m_depth = depth;
 	CalculateHash();
 	CalculateEmptyPosition();
 }
@@ -66,9 +68,19 @@ size_t CNode::GetDepth()
 	return m_depth;
 }
 
+vector<Direction> CNode::GetPath()
+{
+	return m_path;
+}
+
 void CNode::IncreaseDepth(size_t addingDepth)
 {
 	m_depth += addingDepth;
+}
+
+void CNode::AddToPath(Direction direction)
+{
+	m_path.push_back(direction);
 }
 
 void CNode::CalculateHash()

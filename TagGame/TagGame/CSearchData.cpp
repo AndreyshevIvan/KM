@@ -21,7 +21,7 @@ CSearchData::CSearchData(ifstream &input)
 	stringstream stramMatrix(str);
 	m_searchHash = 0;
 	m_searchHashStr = str;
-	for (size_t i = 0; i < m_fieldSize; i++)
+	for (size_t i = 0; i < m_fieldSize * m_fieldSize; i++)
 	{
 		size_t cell;
 		stramMatrix >> cell;
@@ -52,11 +52,26 @@ void CSearchData::IncreaseOpenNodes(size_t addingCount)
 void CSearchData::InsertHash(size_t hash)
 {
 	m_passedHashes.insert(hash);
+
+	if (hash == m_searchHash)
+	{
+		m_isSearchComplete = true;
+	}
 }
 
 bool CSearchData::IsHashValid(size_t hash)
 {
 	return (m_passedHashes.find(hash) == m_passedHashes.end());
+}
+
+bool CSearchData::IsSearchComplete()
+{
+	return m_isSearchComplete;
+}
+
+bool CSearchData::IsDepthValid(size_t depth)
+{
+	return (depth <= m_searchDepth);
 }
 
 void CSearchData::Print(ofstream &output)
@@ -67,32 +82,40 @@ void CSearchData::Print(ofstream &output)
 	output << "Search hash: " << m_searchHashStr << endl;
 	output << "Nodes generate: " << m_passedHashes.size() << endl;
 	output << "Nodes open: " << m_openNodesCount << endl;
-	output << "Path: ";
-
-	for (size_t i = 0; i < m_path.size(); i++)
+	
+	if (IsSearchComplete())
 	{
-		switch (m_path[i])
+		output << "Path was found: ";
+		for (size_t i = 0; i < m_path.size(); i++)
 		{
-		case Direction::UP:
-			output << "Up";
-			break;
-		case Direction::DOWN:
-			output << "Down";
-			break;
-		case Direction::LEFT:
-			output << "Left";
-			break;
-		case Direction::RIGHT:
-			output << "Right";
-			break;
-		default:
-			break;
-		}
+			switch (m_path[i])
+			{
+			case Direction::UP:
+				output << "Up";
+				break;
+			case Direction::DOWN:
+				output << "Down";
+				break;
+			case Direction::LEFT:
+				output << "Left";
+				break;
+			case Direction::RIGHT:
+				output << "Right";
+				break;
+			default:
+				break;
+			}
 
-		if (i != m_path.size() - 1)
-		{
-			output << ", ";
+			if (i != m_path.size() - 1)
+			{
+				output << ", ";
+			}
 		}
 	}
+	else
+	{
+		output << "Path not found";
+	}
+
 	output << endl;
 }

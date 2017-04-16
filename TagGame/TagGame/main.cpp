@@ -35,52 +35,72 @@ void StartBFS(CSearchData &searchData)
 	const vector<vector<size_t>> startMatrix = CNode::CreateStartMatrix(fieldSize);
 
 	queue<CNode*> searchQueue;
-	CNode* firstNode = new CNode(startMatrix);
+	vector<Direction> nullPath;
+	CNode* firstNode = new CNode(startMatrix, nullPath, 0);
 	searchQueue.push(firstNode);
 
 	while (!searchQueue.empty())
 	{
 		ProcessSearch(searchQueue, searchData);
+
+		if (searchData.IsSearchComplete())
+		{
+			break;
+		}
 	}
 }
 
-void ProcessSearch(queue<CNode*> &searchQueue, CSearchData &searcData)
+void ProcessSearch(queue<CNode*> &searchQueue, CSearchData &searchData)
 {
-	auto addToQueue_if = [&](const vector<vector<size_t>> &newMatrix) {
-		size_t newHash = CNode::GetHashFromMatrix(newMatrix);
-		if (searcData.IsHashValid(newHash))
-		{
-			searchQueue.push(new CNode(newMatrix));
-		}
-	};
-
 	CNode* currentNode = searchQueue.front();
 	const Point emptyPos = currentNode->GetEmptyPoint();
-	searcData.InsertHash(currentNode->GetHash());
+	const size_t currHash = currentNode->GetHash();
+	const vector<Direction> prevPath = currentNode->GetPath();
 	searchQueue.pop();
+
+	auto addToQueue_if = [&](const vector<vector<size_t>> &newMatrix, Direction newDirect) {
+		const size_t newHash = CNode::GetHashFromMatrix(newMatrix);
+		const size_t prevDepth = currentNode->GetDepth();
+		const size_t newDepth = prevDepth + 1;
+
+		if (searchData.IsHashValid(newHash) && searchData.IsDepthValid(newDepth))
+		{
+			CNode* newNode = new CNode(newMatrix, prevPath, newDepth);
+			newNode->AddToPath(newDirect);
+			searchQueue.push(newNode);
+			searchData.IncreaseGeneratedNodes();
+		}
+	};
+	
+	searchData.InsertHash(currHash);
+	if (searchData.IsSearchComplete())
+	{
+		searchData.SetPath(prevPath);
+		return;
+	}
 
 	if (emptyPos.x > 0)
 	{
 		vector<vector<size_t>> matrix = currentNode->GetMatrix();
 		swap(matrix[emptyPos.y][emptyPos.x - 1], matrix[emptyPos.y][emptyPos.x]);
-		addToQueue_if(matrix);
+		addToQueue_if(matrix, Direction::RIGHT);
 	}
-	if (emptyPos.x < searcData.GetFieldSize() - 1)
+	if (emptyPos.x < searchData.GetFieldSize() - 1)
 	{
 		vector<vector<size_t>> matrix = currentNode->GetMatrix();
 		swap(matrix[emptyPos.y][emptyPos.x + 1], matrix[emptyPos.y][emptyPos.x]);
-		addToQueue_if(matrix);
+		addToQueue_if(matrix, Direction::LEFT);
 	}
 	if (emptyPos.y > 0)
 	{
 		vector<vector<size_t>> matrix = currentNode->GetMatrix();
 		swap(matrix[emptyPos.y - 1][emptyPos.x], matrix[emptyPos.y][emptyPos.x]);
-		addToQueue_if(matrix);
+		addToQueue_if(matrix, Direction::DOWN);
 	}
-	if (emptyPos.y < searcData.GetFieldSize() - 1)
+	if (emptyPos.y < searchData.GetFieldSize() - 1)
 	{
 		vector<vector<size_t>> matrix = currentNode->GetMatrix();
 		swap(matrix[emptyPos.y + 1][emptyPos.x], matrix[emptyPos.y][emptyPos.x]);
-		addToQueue_if(matrix);
+		addToQueue_if(matrix, Direction::UP);
 	}
 }

@@ -17,7 +17,10 @@ public:
 	void IncreaseGeneratedNodes(size_t addingCount = 1);
 	void IncreaseOpenNodes(size_t addingCount = 1);
 	void InsertHash(size_t hash);
+
 	bool IsHashValid(size_t hash);
+	bool IsSearchComplete();
+	bool IsDepthValid(size_t depth);
 
 	void Print(std::ofstream &output);
 
@@ -30,5 +33,6 @@ private:
 	std::string m_searchHashStr;
 	std::vector<Direction> m_path;
 	std::set<size_t> m_passedHashes;
+	bool m_isSearchComplete = false;
 
 };
