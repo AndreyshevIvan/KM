@@ -3,13 +3,14 @@
 
 using namespace std;
 
-CNode::CNode(const Matrix &matrix, const vector<Direction> &path, size_t depth)
+const size_t EMPTY_NUMBER = 0;
+
+CNode::CNode(Matrix && matrix, size_t hash, const vector<Direction> &path, size_t depth)
 {
 	m_matrix = move(matrix);
-	m_path = move(path);
+	m_hash = hash;
+	m_path = path;
 	m_depth = depth;
-	CalculateHash();
-	CalculateEmptyPosition();
 }
 
 size_t CNode::GetHashFromMatrix(const Matrix &matrix)
@@ -78,26 +79,27 @@ void CNode::IncreaseDepth(size_t addingDepth)
 	m_depth += addingDepth;
 }
 
-void CNode::AddToPath(Direction direction)
+void CNode::MoveEmptyPos(Point && fatherEmptyPos, Direction direction)
 {
-	m_path.push_back(direction);
-}
+	m_emptyPosition = move(fatherEmptyPos);
 
-void CNode::CalculateHash()
-{
-	m_hash = GetHashFromMatrix(m_matrix);
-}
-
-void CNode::CalculateEmptyPosition()
-{
-	for (size_t i = 0; i < m_matrix.size(); i++)
+	switch (direction)
 	{
-		for (size_t j = 0; j < m_matrix.front().size(); j++)
-		{
-			if (m_matrix[i][j] == 0)
-			{
-				m_emptyPosition = Point(j, i);
-			}
-		}
+	case Direction::UP:
+		m_emptyPosition.y++;
+		break;
+	case Direction::DOWN:
+		m_emptyPosition.y--;
+		break;
+	case Direction::LEFT:
+		m_emptyPosition.x++;
+		break;
+	case Direction::RIGHT:
+		m_emptyPosition.x--;
+		break;
+	default:
+		break;
 	}
+
+	m_path.push_back(direction);
 }

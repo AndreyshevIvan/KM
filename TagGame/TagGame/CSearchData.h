@@ -13,8 +13,9 @@ public:
 	size_t GetFieldSize();
 	std::string GetSearchName();
 	Matrix GetSearchMatrix();
+	CellCoordinates GetCoordinates();
 
-	void SetPath(const std::vector<Direction> &direction);
+	void SetPath(const std::vector<Direction> &path);
 
 	void IncreaseGeneratedNodes(size_t addingCount = 1);
 	void IncreaseOpenNodes(size_t addingCount = 1);
@@ -39,6 +40,7 @@ private:
 	std::vector<Direction> m_path;
 	std::set<size_t> m_passedHashes;
 	std::string m_searchName;
+	CellCoordinates m_coordinates;
 	bool m_isSearchComplete = false;
 
 };

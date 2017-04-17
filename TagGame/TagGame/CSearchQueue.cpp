@@ -9,9 +9,8 @@ CNode* CStack::Top()
 {
 	return m_stack.top();
 }
-void CStack::Push(CNode* node, const Matrix &searchMatrix)
+void CStack::Push(CNode* node)
 {
-	(void)searchMatrix;
 	m_stack.push(node);
 }
 void CStack::Pop()
@@ -38,9 +37,8 @@ CNode* CQueue::Top()
 {
 	return m_queue.front();
 }	
-void CQueue::Push(CNode* node, const Matrix &searchMatrix)
+void CQueue::Push(CNode* node)
 {
-	(void)searchMatrix;
 	m_queue.push(node);
 }
 void CQueue::Pop()
@@ -71,10 +69,10 @@ bool SortPredicate(matrixPriority firstPair, matrixPriority secondPair)
 {
 	return firstPair.first <= secondPair.first;
 }
-void CPriorityQueue::Push(CNode* node, const Matrix &searchMatrix)
+void CPriorityQueue::Push(CNode* node)
 {
-	const Matrix newMatrix = node->GetMatrix();
-	const size_t priority = CalculatePriority(newMatrix, searchMatrix);
+	auto newMatrix = node->GetMatrix();
+	const size_t &priority = CalculatePriority(newMatrix);
 
 	m_priorityQueue.insert(priorityMap::value_type(priority, node));
 }
@@ -89,33 +87,18 @@ bool CPriorityQueue::IsEmpty()
 {
 	return m_priorityQueue.empty();
 }
-size_t CPriorityQueue::CalculatePriority(const Matrix &newMatrix, const Matrix &searchMatrix)
+size_t CPriorityQueue::CalculatePriority(const Matrix &newMatrix)
 {
-	auto getCoordinateInMatrix = [](const Matrix &matrix, size_t cellNum) {
-		const size_t matrixSize = matrix.size();
-		for (size_t i = 0; i < matrixSize; i++)
-		{
-			for (size_t j = 0; j < matrixSize; j++)
-			{
-				if (matrix[i][j] == cellNum)
-				{
-					return Point(j, i);
-				}
-			}
-		}
-		return Point(0, 0);
-	};
-
 	size_t priority = 0;
-	const size_t matrixSize = newMatrix.size();
+	const size_t &matrixSize = newMatrix.size();
 
 	for (size_t row = 0; row < matrixSize; row++)
 	{
 		for (size_t coll = 0; coll < matrixSize; coll++)
 		{
-			const size_t cell = newMatrix[row][coll];
+			const size_t &cell = newMatrix[row][coll];
 			Point currPoint(coll, row);
-			Point destenation = getCoordinateInMatrix(searchMatrix, cell);
+			Point destenation = m_coordinates.find(cell)->second;
 			int deltaX = static_cast<int>(destenation.x - currPoint.x);
 			int deltaY = static_cast<int>(destenation.y - currPoint.y);
 			size_t wayLength = abs(deltaX) + abs(deltaY);
@@ -131,4 +114,14 @@ void CPriorityQueue::Clear()
 		delete m_priorityQueue.begin()->second;
 		m_priorityQueue.erase(m_priorityQueue.begin());
 	}
+}
+
+void CPriorityQueue::Write()
+{
+	for (auto& queueUnit : m_priorityQueue)
+	{
+		cout << queueUnit.first << " ";
+	}
+
+	cout << endl;
 }

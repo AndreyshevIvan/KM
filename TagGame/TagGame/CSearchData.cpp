@@ -33,6 +33,7 @@ CSearchData::CSearchData(ifstream &input)
 			stramMatrix >> cell;
 			m_searchHash = m_searchHash * 10 + cell;
 			matrixRow.push_back(cell);
+			m_coordinates.insert(CellCoordinates::value_type(cell, Point(j, i)));
 		}
 		m_searchMatrix.push_back(matrixRow);
 	}
@@ -50,10 +51,14 @@ Matrix CSearchData::GetSearchMatrix()
 {
 	return m_searchMatrix;
 }
+CellCoordinates CSearchData::GetCoordinates()
+{
+	return m_coordinates;
+}
 
 void CSearchData::SetPath(const vector<Direction> &path)
 {
-	m_path = move(path);
+	m_path = path;
 }
 
 void CSearchData::IncreaseGeneratedNodes(size_t addingCount)

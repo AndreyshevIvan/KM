@@ -48,9 +48,10 @@ int main(int argc, char* argv[])
 void StartSearch(CSearchData &searchData, CSearchQueue* searchQueue)
 {
 	const size_t fieldSize = searchData.GetFieldSize();
-	const Matrix startMatrix = CNode::CreateStartMatrix(fieldSize);
+	Matrix startMatrix = CNode::CreateStartMatrix(fieldSize);
 
-	CNode* firstNode = new CNode(startMatrix);
+	const size_t newHash = CNode::GetHashFromMatrix(startMatrix);
+	CNode* firstNode = new CNode(move(startMatrix), newHash);
 	searchQueue->Push(firstNode);
 
 	while (!searchQueue->IsEmpty())
@@ -62,19 +63,16 @@ void StartSearch(CSearchData &searchData, CSearchQueue* searchQueue)
 			break;
 		}
 	}
-
-	searchQueue->Clear();
-	delete searchQueue;
 }
 
 void ProcessSearch(CSearchQueue* searchQueue, CSearchData &searchData)
 {
 	CNode* currentNode = searchQueue->Top();
 	const Point emptyPos = currentNode->GetEmptyPoint();
-	const vector<Direction> prevPath = currentNode->GetPath();
+	vector<Direction> prevPath = currentNode->GetPath();
 	searchQueue->Pop();
 
-	auto addToQueue_if = [&](const Matrix &newMatrix, Direction newDirect) {
+	auto addToQueue_if = [&](Matrix && newMatrix, Direction newDirect) {
 		const size_t newHash = CNode::GetHashFromMatrix(newMatrix);
 		const size_t prevDepth = currentNode->GetDepth();
 		const size_t newDepth = prevDepth + 1;
@@ -82,9 +80,9 @@ void ProcessSearch(CSearchQueue* searchQueue, CSearchData &searchData)
 
 		if (searchData.IsHashValid(newHash) && searchData.IsDepthValid(newDepth))
 		{
-			CNode* newNode = new CNode(newMatrix, prevPath, newDepth);
-			newNode->AddToPath(newDirect);
-			searchQueue->Push(newNode, searchData.GetSearchMatrix());
+			CNode* newNode = new CNode(move(newMatrix), newHash, prevPath, newDepth);
+			newNode->MoveEmptyPos(move(currentNode->GetEmptyPoint()), newDirect);
+			searchQueue->Push(newNode);
 			searchData.IncreaseOpenNodes();
 		}
 	};
@@ -98,27 +96,27 @@ void ProcessSearch(CSearchQueue* searchQueue, CSearchData &searchData)
 
 	if (emptyPos.x > 0)
 	{
-		Matrix matrix = currentNode->GetMatrix();
+		auto matrix = currentNode->GetMatrix();
 		swap(matrix[emptyPos.y][emptyPos.x - 1], matrix[emptyPos.y][emptyPos.x]);
-		addToQueue_if(matrix, Direction::RIGHT);
+		addToQueue_if(move(matrix), Direction::RIGHT);
 	}
 	if (emptyPos.x < searchData.GetFieldSize() - 1)
 	{
-		Matrix matrix = currentNode->GetMatrix();
+		auto matrix = currentNode->GetMatrix();
 		swap(matrix[emptyPos.y][emptyPos.x + 1], matrix[emptyPos.y][emptyPos.x]);
-		addToQueue_if(matrix, Direction::LEFT);
+		addToQueue_if(move(matrix), Direction::LEFT);
 	}
 	if (emptyPos.y > 0)
 	{
-		Matrix matrix = currentNode->GetMatrix();
+		auto matrix = currentNode->GetMatrix();
 		swap(matrix[emptyPos.y - 1][emptyPos.x], matrix[emptyPos.y][emptyPos.x]);
-		addToQueue_if(matrix, Direction::DOWN);
+		addToQueue_if(move(matrix), Direction::DOWN);
 	}
 	if (emptyPos.y < searchData.GetFieldSize() - 1)
 	{
-		Matrix matrix = currentNode->GetMatrix();
+		auto matrix = currentNode->GetMatrix();
 		swap(matrix[emptyPos.y + 1][emptyPos.x], matrix[emptyPos.y][emptyPos.x]);
-		addToQueue_if(matrix, Direction::UP);
+		addToQueue_if(move(matrix), Direction::UP);
 	}
 
 	delete currentNode;
@@ -138,7 +136,7 @@ CSearchQueue* CreateSearchQueue(CSearchData &searchData)
 	}
 	if (searchName == ASTAR_SEARCH_NAME)
 	{
-		return new CPriorityQueue();
+		return new CPriorityQueue(searchData.GetCoordinates());
 	}
 
 	return nullptr;

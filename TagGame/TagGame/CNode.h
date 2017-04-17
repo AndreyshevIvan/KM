@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <map>
 
 enum struct Direction
 {
@@ -20,12 +21,14 @@ struct Point
 	size_t y = 0;
 };
 
+
+typedef std::map<size_t, Point> CellCoordinates;
 typedef std::vector<std::vector<size_t>> Matrix;
 
 class CNode
 {
 public:
-	CNode(const Matrix &matrix, const std::vector<Direction> &path = {}, size_t depth = 0);
+	CNode(Matrix && matrix, size_t hash, const std::vector<Direction> &path = {}, size_t depth = 0);
 
 	static size_t GetHashFromMatrix(const Matrix &matrix);
 	static Matrix CreateStartMatrix(size_t size);
@@ -36,8 +39,8 @@ public:
 	std::vector<Direction> GetPath();
 	Point GetEmptyPoint();
 
+	void MoveEmptyPos(Point && fatherEmptyPos, Direction direction);
 	void IncreaseDepth(size_t addingDepth = 1);
-	void AddToPath(Direction direction);
 
 private:
 	size_t m_hash = 0;
@@ -45,7 +48,4 @@ private:
 	Point m_emptyPosition = { 0, 0 };
 	Matrix m_matrix;
 	std::vector<Direction> m_path;
-
-	void CalculateHash();
-	void CalculateEmptyPosition();
 };
